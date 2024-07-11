@@ -3,22 +3,21 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: nolatech-backend-api
     ports:
       - "3001:3001"
     environment:
-      - NODE_ENV=${NODE_ENV}
+      - NODE_ENV=production
       - JWT_SECRET=${JWT_SECRET}
       - PORT=${PORT}
       - DOMAIN_HOST=${DOMAIN_HOST}
       - DATABASE_SQLITE_NAME=${DATABASE_SQLITE_NAME}
-      - DATABASE_CONNECTION_STRIN=${DATABASE_CONNECTION_STRIN}
-      - DATABASE_PORT=${DATABASE_PORT}
-      - DATABASE_HOST=${DATABASE_HOST}
-      - DATABASE_NAME=${DATABASE_NAME}
-      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_CONNECTION_STRIN=postgres://postgres:password@database:5432/mydatabase
+      - DATABASE_PORT=5432
+      - DATABASE_HOST=database
+      - DATABASE_NAME=mydatabase
+      - DATABASE_USER=postgres
       - DATABASE_SSL=${DATABASE_SSL}
-      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_PASSWORD=password
       - DATABASE_MAX_POOL=${DATABASE_MAX_POOL}
       - DATABASE_MIN_POOL=${DATABASE_MIN_POOL}
     labels:
@@ -34,6 +33,18 @@ services:
     networks:
       - dokploy-network
 
+  database:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
 networks:
   dokploy-network:
     external: true
+
+volumes:
+  db-data:
