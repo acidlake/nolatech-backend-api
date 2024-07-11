@@ -1,5 +1,5 @@
 import { knex } from "knex";
-const config = require("../knexfile");
+import config from "../knexfile";
 
 const db = knex(config);
 export default db;
