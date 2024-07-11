@@ -32,8 +32,8 @@ services:
       - /usr/src/app/node_modules
     command: pnpm start
     networks:
-      - app-network
+      - dokploy-network
 
 networks:
-  app-network:
+  dokploy-network:
     external: true
