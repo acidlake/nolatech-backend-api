@@ -23,10 +23,11 @@ services:
       - DATABASE_MAX_POOL=${DATABASE_MAX_POOL}
       - DATABASE_MIN_POOL=${DATABASE_MIN_POOL}
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.backend-app.rule=Host(`${DOMAIN_HOST}`)
-      - traefik.http.routers.backend-app.entrypoints=web
-      - traefik.http.services.backend-app.loadbalancer.server.port=${PORT}
+      - "traefik.enable=true"
+      - "traefik.http.routers.api-nolatech-backend.entrypoints=websecure"
+      - "traefik.http.routers.api-nolatech-backend.tls.certResolver=letsencrypt"
+      - "traefik.http.routers.api-nolatech-backend.rule=Host(`${DOMAIN_HOST}`)"
+      - "traefik.http.services.api-nolatech-backend.loadbalancer.server.port=${PORT}"
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
@@ -36,3 +37,4 @@ services:
 
 networks:
   app-network:
+    external: true
