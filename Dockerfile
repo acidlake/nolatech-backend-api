@@ -13,6 +13,8 @@ COPY . .
 # Build the TypeScript code
 RUN pnpm build
 
+RUN pnpm migrate:down
+
 RUN pnpm migrate:up
 
 RUN pnpm seed
