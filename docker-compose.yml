@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nolatech-backend-api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - JWT_SECRET=${JWT_SECRET}
+      - PORT=3000
+      - DATABASE_SQLITE_NAME=${DATABASE_SQLITE_NAME}
+      - DATABASE_CONNECTION_STRIN=${DATABASE_CONNECTION_STRIN}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_SSL=${DATABASE_SSL}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_MAX_POOL=${DATABASE_MAX_POOL}
+      - DATABASE_MIN_POOL=${DATABASE_MIN_POOL}
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: pnpm start
+    networks:
+      - app-network
+
+networks:
+  app-network:
