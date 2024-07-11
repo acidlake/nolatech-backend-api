@@ -1,7 +1,10 @@
 import Router from "koa-router";
+import healthRoutes from "./routes/v1/healthRoutes";
 
-export const router = new Router();
-
-router.get("/api/v1/health", (ctx, next) => {
-  ctx.body = "API Up and running..";
+const router = new Router({
+  prefix: "/api/v1",
 });
+
+router.use(healthRoutes);
+
+export default router.routes();

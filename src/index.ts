@@ -1,11 +1,11 @@
 import Koa from "koa";
-import { router } from "./routes";
+import mainRoute from "./routes";
 
 const app = new Koa();
 
-const port = 3000;
+app.use(mainRoute);
 
-app.use(router.routes());
+const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
