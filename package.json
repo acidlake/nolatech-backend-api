@@ -8,7 +8,8 @@
     "dev": "nodemon src/index.ts",
     "migrate:down": "pnpx knex migrate:down",
     "migrate:up": "pnpx knex migrate:up",
-    "seed": "pnpx knex seed:run"
+    "seed": "pnpx knex seed:run",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

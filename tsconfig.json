@@ -3,11 +3,12 @@
     "module": "commonjs",
     "target": "es6",
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "knexfile.ts"]
+  "include": ["src/**/*", "knexfile.ts"],
+  "exclude": ["node_modules", "dist"]
 }
