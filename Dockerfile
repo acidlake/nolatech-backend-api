@@ -1,5 +1,7 @@
 FROM node:22-alpine
 
+ENV NODE_ENV=${NODE_ENV}
+
 WORKDIR /usr/src/app
 
 COPY package.json pnpm-lock.yaml ./
@@ -12,13 +14,7 @@ COPY . .
 
 # Build the TypeScript code
 
-ENV NODE_ENV=production
 
-RUN pnpm migrate:down
-
-RUN pnpm migrate:up
-
-RUN pnpm seed
 
 RUN pnpm build
 
