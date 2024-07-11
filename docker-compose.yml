@@ -8,7 +8,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=${NODE_ENV}
       - JWT_SECRET=${JWT_SECRET}
       - PORT=3000
       - DATABASE_SQLITE_NAME=${DATABASE_SQLITE_NAME}
