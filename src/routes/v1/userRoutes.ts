@@ -1,4 +1,5 @@
 import Router from "koa-router";
+import { Context, Next } from "koa";
 import {
   index,
   show,
@@ -6,12 +7,17 @@ import {
   destroy,
 } from "../../controllers/v1/userController";
 
+import { authenticate } from "../../middleware/authMidleware";
+
 const router = new Router();
 
+// public routes
 router.get("/users", index);
-router.get("/users/:id", show);
-router.post("/users", store);
-router.delete("/users/:id", destroy);
-router.put("/users", store);
+router.get("/users/:id", authenticate, show);
+
+// Private routes
+router.post("/users", authenticate, store);
+router.delete("/users/:id", authenticate, destroy);
+router.put("/users", authenticate, store);
 
 export default router.routes();

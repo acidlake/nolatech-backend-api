@@ -17,6 +17,7 @@ export function CreateUserDTO(user: Partial<IUserInterface>): IUserInterface {
     firstName: user.firstName || "",
     lastName: user.lastName || "",
     username: user.lastName || "",
+    email: user.email || "",
     password: hashPassword(user.password || ""),
     status: UserStatusEnum.ACTIVE,
     created_at: new Date(),
