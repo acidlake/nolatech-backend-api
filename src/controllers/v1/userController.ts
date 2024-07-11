@@ -3,9 +3,14 @@ import { UserDataSource } from "../../server/db/queries/users";
 import { FetchUserDTO } from "../../dto/v1/fetchUserDto";
 import { CreateUserDTO } from "../../dto/v1/createUserDto";
 import { IUserInterface } from "../../interfaces/user-interface";
-import db from "../../db";
+import { validateUserStatus } from "../../utils/validateUserStatus";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
-const data = new UserDataSource(db);
+import db from "../../db";
+import { isAuthenticated } from "../../utils/isAuthenticated";
+
+const backend = new UserDataSource(db, bcrypt, jwt, validateUserStatus);
 
 // GET All Users
 export const index = async (ctx: Context): Promise<void> => {
@@ -39,10 +44,12 @@ export const index = async (ctx: Context): Promise<void> => {
       }
     }
 
-    const userResponse = await data.getAllUsers(limit, page);
-    const users = userResponse.map((user) => new FetchUserDTO(user));
+    const userResponse = await backend.getAllUsers(limit, page);
+    const users = userResponse.map(
+      (user) => new FetchUserDTO(user, isAuthenticated(ctx)),
+    );
 
-    const totalCount = await data.getTotalUserCount();
+    const totalCount = await backend.getTotalUserCount();
     const totalPages = Math.ceil(totalCount / limit);
     const hasNextPage = page < totalPages;
     const hasPrevPage = page > 1;
@@ -100,8 +107,8 @@ export const show = async (ctx: Context): Promise<void> => {
   const id = params.id;
 
   try {
-    const response = await data.getUser(id);
-    const user = new FetchUserDTO(response);
+    const response = await backend.getUser(id);
+    const user = new FetchUserDTO(response, isAuthenticated(ctx));
 
     ctx.status = 200;
     ctx.body = {
@@ -122,7 +129,7 @@ export const destroy = async (ctx: Context): Promise<void> => {
   const params = ctx.params;
   const id = params.id;
   try {
-    const response = await data.destroyUser(id);
+    const response = await backend.destroyUser(id);
 
     ctx.status = 200;
     ctx.body = "User delete successfully";

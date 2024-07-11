@@ -45,4 +45,16 @@ export interface DatabaseInterface {
    * @returns {Promise<void>} - A promise that resolves when the user is deleted.
    */
   destroyUser(id: string): Promise<void>;
+
+  /**
+   * Creates an email session for a user.
+   *
+   * @param {string} identification - The username or email of the user.
+   * @param {string} password - The password of the user.
+   * @returns {Promise<string>} - A promise that resolves to the session token.
+   */
+  createIdentificationSession(
+    identification: string,
+    password: string,
+  ): Promise<string>;
 }

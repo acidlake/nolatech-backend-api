@@ -1,4 +1,5 @@
 import Router from "koa-router";
+import { Context, Next } from "koa";
 import {
   index,
   show,
@@ -12,7 +13,7 @@ const router = new Router();
 
 // public routes
 router.get("/users", index);
-router.get("/users/:id", show);
+router.get("/users/:id", authenticate, show);
 
 // Private routes
 router.post("/users", authenticate, store);
