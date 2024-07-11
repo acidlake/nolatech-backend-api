@@ -9,7 +9,7 @@ exports.up = function (knex) {
     table.string("lastName").nullable();
     table.string("username").notNullable().unique();
     table.string("passwordHash").notNullable();
-    table.enu("column", ["ACTIVE", "DELETED"], {
+    table.enu("status", ["ACTIVE", "DELETED", "INACTIVE"], {
       useNative: true,
       enumName: "status",
     });
