@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     container_name: nolatech-backend-api
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
       - NODE_ENV=${NODE_ENV}
       - JWT_SECRET=${JWT_SECRET}

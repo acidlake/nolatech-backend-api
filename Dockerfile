@@ -20,6 +20,6 @@ RUN pnpm build
 #RUN pnpm seed
 
 # Expose the port the app runs on
-EXPOSE 3000
+EXPOSE 3001
 
 CMD ["pnpm", "start"]
