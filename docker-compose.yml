@@ -10,7 +10,8 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV}
       - JWT_SECRET=${JWT_SECRET}
-      - PORT=3000
+      - PORT=${PORT}
+      - DOMAIN_HOST=${DOMAIN_HOST}
       - DATABASE_SQLITE_NAME=${DATABASE_SQLITE_NAME}
       - DATABASE_CONNECTION_STRIN=${DATABASE_CONNECTION_STRIN}
       - DATABASE_PORT=${DATABASE_PORT}
@@ -21,6 +22,11 @@ services:
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
       - DATABASE_MAX_POOL=${DATABASE_MAX_POOL}
       - DATABASE_MIN_POOL=${DATABASE_MIN_POOL}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.backend-app.rule=Host(`${DOMAIN_HOST}`)
+      - traefik.http.routers.backend-app.entrypoints=web
+      - traefik.http.services.backend-app.loadbalancer.server.port=${PORT}
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
