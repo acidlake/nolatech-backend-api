@@ -13,11 +13,11 @@ COPY . .
 # Build the TypeScript code
 RUN pnpm build
 
-#RUN pnpm migrate:down
+RUN pnpm migrate:down
 
-#RUN pnpm migrate:up
+RUN pnpm migrate:up
 
-#RUN pnpm seed
+RUN pnpm seed
 
 # Expose the port the app runs on
 EXPOSE 3001
