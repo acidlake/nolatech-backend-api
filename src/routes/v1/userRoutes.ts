@@ -6,12 +6,17 @@ import {
   destroy,
 } from "../../controllers/v1/userController";
 
+import { authenticate } from "../../middleware/authMidleware";
+
 const router = new Router();
 
+// public routes
 router.get("/users", index);
 router.get("/users/:id", show);
-router.post("/users", store);
-router.delete("/users/:id", destroy);
-router.put("/users", store);
+
+// Private routes
+router.post("/users", authenticate, store);
+router.delete("/users/:id", authenticate, destroy);
+router.put("/users", authenticate, store);
 
 export default router.routes();

@@ -8,5 +8,6 @@ const router = new Router({
 
 router.use(userRoutes);
 router.use(healthRoutes);
+router.use(router.allowedMethods());
 
 export default router.routes();
