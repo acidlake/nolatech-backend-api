@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { DatabaseInterface } from "../../../interfaces/infraestructure/DatabaseInterface";
 import { validateUserStatus } from "../../../utils/validateUserStatus";
+import { SortEnum } from "../../../interfaces/filter-interface";
 
 /**
  * UserDataSource class implementing the DatabaseInterface for user-related operations.
@@ -47,11 +48,13 @@ export class UserDataSource implements DatabaseInterface {
   async getAllUsers(
     limit: number = 10,
     page: number = 1,
+    sort: SortEnum = SortEnum.DESC,
   ): Promise<IUserInterface[]> {
     const offset = (page - 1) * limit;
     return (await this.datasource("users")
       .select("*")
       .limit(limit)
+      .orderBy("created_at", sort)
       .offset(offset)) as unknown as IUserInterface[];
   }
 
@@ -85,9 +88,10 @@ export class UserDataSource implements DatabaseInterface {
    * @returns {Promise<IUserInterface>} - A promise that resolves to the stored user.
    */
   async storeUser(userData: Partial<IUserInterface>): Promise<IUserInterface> {
-    return (await this.datasource("users")
-      .insert(userData, "*")
-      .first()) as unknown as IUserInterface;
+    return (await this.datasource("users").insert(
+      userData,
+      "*",
+    )) as unknown as IUserInterface;
   }
 
   /**
@@ -140,5 +144,37 @@ export class UserDataSource implements DatabaseInterface {
     );
 
     return token;
+  }
+
+  async getUserByEmail(email: string): Promise<boolean> {
+    const response = await this.datasource("users")
+      .where({ email: email })
+      .count("* as count")
+      .first();
+
+    if (!response) {
+      return false;
+    } else {
+      if (Number(response.count) > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  async getUserByUsername(username: string): Promise<boolean> {
+    const response = await this.datasource("users")
+      .where({ username: username })
+      .count("* as count")
+      .first();
+    if (!response) {
+      return false;
+    } else {
+      if (Number(response.count) > 0) {
+        return true;
+      }
+      return false;
+    }
   }
 }

@@ -57,4 +57,20 @@ export interface DatabaseInterface {
     identification: string,
     password: string,
   ): Promise<string>;
+
+  /**
+   * Fetches a user by Email.
+   *
+   * @param {string} email - The Email of the user to fetch.
+   * @returns {Promise<boolean>} - A promise that resolves to the user.
+   */
+  getUserByEmail(email: string): Promise<boolean>;
+
+  /**
+   * Fetches a user by Username.
+   *
+   * @param {string} username - The Username of the user to fetch.
+   * @returns {Promise<boolean>} - A promise that resolves to the user.
+   */
+  getUserByUsername(username: string): Promise<boolean>;
 }

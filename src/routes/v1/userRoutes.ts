@@ -4,6 +4,7 @@ import {
   index,
   show,
   store,
+  update,
   destroy,
 } from "../../controllers/v1/userController";
 
@@ -18,6 +19,6 @@ router.get("/users/:id", authenticate, show);
 // Private routes
 router.post("/users", authenticate, store);
 router.delete("/users/:id", authenticate, destroy);
-router.put("/users", authenticate, store);
+router.put("/users", authenticate, update);
 
 export default router.routes();

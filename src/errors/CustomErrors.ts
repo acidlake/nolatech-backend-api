@@ -25,3 +25,26 @@ export class UserDeletedError extends Error {
     this.name = "UserDeletedError";
   }
 }
+
+export class EmailExistsError extends Error {
+  constructor(message: string = "Email already exists") {
+    super(message);
+    this.name = "EmailExistsError";
+  }
+}
+
+export class UsernameExistsError extends Error {
+  constructor(message: string = "Username already exists") {
+    super(message);
+    this.name = "UsernameExistsError";
+  }
+}
+
+export class PasswordLengthError extends Error {
+  constructor(
+    message: string = "Password must be between 6 and 20 characters",
+  ) {
+    super(message);
+    this.name = "PasswordLenghtError";
+  }
+}

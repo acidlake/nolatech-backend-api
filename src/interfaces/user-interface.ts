@@ -9,11 +9,20 @@ export type IUserInterface = {
   firstName: string;
   lastName: string;
   username: string;
-  password: string;
+  passwordHash: string;
   email: string;
   status: UserStatusEnum;
   created_at: Date;
   updated_at: Date;
+};
+
+export type ICreateUserInterface = {
+  firstName: string;
+  lastName: string;
+  username: string;
+  password: string;
+  status: UserStatusEnum;
+  email: string;
 };
 
 export interface LoginRequestBody {

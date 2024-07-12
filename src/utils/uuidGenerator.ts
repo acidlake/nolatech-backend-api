@@ -1,4 +1,4 @@
-const knex = require("knex");
+import knex from "knex";
 
 /**
  * Generates a UUID using the Knex.js function.
@@ -6,7 +6,8 @@ const knex = require("knex");
  * @returns {string} The generated UUID.
  */
 function uuidGenerator(): string {
-  return knex.fn.uuid();
+  console.log("generate uuid", knex.knex);
+  return "knex.fn.uuid();";
 }
 
 export default uuidGenerator;

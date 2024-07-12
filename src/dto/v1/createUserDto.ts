@@ -1,4 +1,5 @@
 import {
+  ICreateUserInterface,
   IUserInterface,
   UserStatusEnum,
 } from "../../interfaces/user-interface";
@@ -11,15 +12,15 @@ import uuidGenerator from "../../utils/uuidGenerator";
  * @param {Partial<IUserInterface>} user - Partial user object containing user data.
  * @returns {IUserInterface} The complete user object with defaults and generated fields.
  */
-export function CreateUserDTO(user: Partial<IUserInterface>): IUserInterface {
+export function CreateUserDTO(user: ICreateUserInterface): IUserInterface {
   return {
-    id: uuidGenerator(),
+    id: crypto.randomUUID(),
     firstName: user.firstName || "",
     lastName: user.lastName || "",
-    username: user.lastName || "",
+    username: user.username || "",
     email: user.email || "",
-    password: hashPassword(user.password || ""),
-    status: UserStatusEnum.ACTIVE,
+    passwordHash: hashPassword(user.password || ""),
+    status: user.status || UserStatusEnum.ACTIVE,
     created_at: new Date(),
     updated_at: new Date(),
   };

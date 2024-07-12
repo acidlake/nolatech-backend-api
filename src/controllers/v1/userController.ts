@@ -2,13 +2,19 @@ import { Context } from "koa";
 import { UserDataSource } from "../../server/db/queries/users";
 import { FetchUserDTO } from "../../dto/v1/fetchUserDto";
 import { CreateUserDTO } from "../../dto/v1/createUserDto";
-import { IUserInterface } from "../../interfaces/user-interface";
+import { ICreateUserInterface } from "../../interfaces/user-interface";
 import { validateUserStatus } from "../../utils/validateUserStatus";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
 import db from "../../db";
 import { isAuthenticated } from "../../utils/isAuthenticated";
+import { validateUserData } from "../../utils/validateUserData";
+import {
+  EmailExistsError,
+  PasswordLengthError,
+  UsernameExistsError,
+} from "../../errors/CustomErrors";
+import { SortEnum } from "../../interfaces/filter-interface";
 
 const backend = new UserDataSource(db, bcrypt, jwt, validateUserStatus);
 
@@ -17,6 +23,7 @@ export const index = async (ctx: Context): Promise<void> => {
   try {
     let limit: number = 10;
     let page: number = 1;
+    let sort: SortEnum = SortEnum.DESC;
 
     const queryParams = ctx.query;
 
@@ -39,12 +46,26 @@ export const index = async (ctx: Context): Promise<void> => {
         page = parsedPage;
       } else {
         console.warn(
-          `Invalid limit parameter: ${queryParams.limit}. Using default.`,
+          `Invalid limit parameter: ${queryParams.page}. Using default.`,
         );
       }
     }
 
-    const userResponse = await backend.getAllUsers(limit, page);
+    if (
+      (queryParams.sort && queryParams.sort === SortEnum.DESC) ||
+      queryParams.sort === SortEnum.ASC
+    ) {
+      const parsedSort = queryParams.sort;
+      if (sort.length > 0) {
+        sort = parsedSort;
+      } else {
+        console.warn(
+          `Invalid limit parameter: ${queryParams.sort}. Using default.`,
+        );
+      }
+    }
+
+    const userResponse = await backend.getAllUsers(limit, page, sort);
     const users = userResponse.map(
       (user) => new FetchUserDTO(user, isAuthenticated(ctx)),
     );
@@ -82,22 +103,32 @@ export const index = async (ctx: Context): Promise<void> => {
 // POST
 export const store = async (ctx: Context): Promise<void> => {
   const request = ctx.request;
-  const userData: Partial<IUserInterface> =
-    request.body as unknown as Partial<IUserInterface>;
+  const userData: ICreateUserInterface =
+    request.body as unknown as ICreateUserInterface;
 
   try {
-    // validation
-    // create new payload
+    await validateUserData(userData);
     const newUser = CreateUserDTO(userData);
-    //const response = await
+    const response = await backend.storeUser(newUser);
+
     ctx.status = 200;
     ctx.body = {
       success: true,
     };
   } catch (error) {
-    console.error("Error adding user:", error);
-    ctx.status = 500;
-    ctx.body = { error: "Error adding user" };
+    if (
+      error instanceof EmailExistsError ||
+      error instanceof UsernameExistsError ||
+      error instanceof PasswordLengthError
+    ) {
+      ctx.status = 400;
+      ctx.body = {
+        error: error.message,
+      };
+    } else {
+      ctx.status = 500;
+      ctx.body = { error: "Error adding user" };
+    }
   }
 };
 
