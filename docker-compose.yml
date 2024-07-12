@@ -1,0 +1,38 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=${NODEV_ENV}
+      - JWT_SECRET=${JWT_SECRET}
+      - PORT=${PORT}
+      - DOMAIN_HOST=${DOMAIN_HOST}
+      - DATABASE_SQLITE_NAME=${DATABASE_SQLITE_NAME}
+      - DATABASE_CONNECTION_STRING=${DATABASE_CONNECTION_STRING}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_SSL=${DATABASE_SSL}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_MAX_POOL=${DATABASE_MAX_POOL}
+      - DATABASE_MIN_POOL=${DATABASE_MIN_POOL}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api-nolatech-backend.entrypoints=websecure"
+      - "traefik.http.routers.api-nolatech-backend.tls.certResolver=letsencrypt"
+      - "traefik.http.routers.api-nolatech-backend.rule=Host(`${DOMAIN_HOST}`)"
+      - "traefik.http.services.api-nolatech-backend.loadbalancer.server.port=${PORT}"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: pnpm start
+    networks:
+      - dokploy-network
+
+networks:
+  dokploy-network:
+    external: true

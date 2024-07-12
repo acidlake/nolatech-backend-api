@@ -8,6 +8,7 @@ exports.up = function (knex) {
     table.string("firstName").notNullable();
     table.string("lastName").nullable();
     table.string("username").notNullable().unique();
+    table.string("email").notNullable().unique();
     table.string("passwordHash").notNullable();
     table.enu("status", ["ACTIVE", "DELETED", "INACTIVE"], {
       useNative: true,
