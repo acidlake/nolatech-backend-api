@@ -108,7 +108,6 @@ export const store = async (ctx: Context): Promise<void> => {
   const request = ctx.request;
   const userData: ICreateUserInterface =
     request.body as unknown as ICreateUserInterface;
-
   try {
     await validateUserData(userData);
     const newUser = CreateUserDTO(userData);
