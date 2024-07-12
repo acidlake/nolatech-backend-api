@@ -1,8 +1,18 @@
 import Koa from "koa";
 import bodyParser from "koa-bodyparser";
 import mainRoute from "./routes";
+import cors from "@koa/cors";
 
 const app = new Koa();
+
+const corsOptions = {
+  origin: "*",
+  allowMethods: ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"],
+  allowHeaders: ["Content-Type", "Authorization", "Accept"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 app.use(bodyParser());
 app.use(mainRoute);
