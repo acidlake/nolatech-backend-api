@@ -117,7 +117,6 @@ export class UserDataSource implements DatabaseInterface {
    * @throws {InvalidPasswordError} If password is invalid.
    * @throws {Error} If user status is unknown.
    */
-
   async createIdentificationSession(
     identification: string,
     password: string,
@@ -146,6 +145,12 @@ export class UserDataSource implements DatabaseInterface {
     return token;
   }
 
+  /**
+   * Checks if a user exists by their email.
+   *
+   * @param {string} email - The email to check for existence.
+   * @returns {Promise<boolean>} - A promise that resolves to `true` if the email exists, otherwise `false`.
+   */
   async getUserByEmail(email: string): Promise<boolean> {
     const response = await this.datasource("users")
       .where({ email: email })
@@ -163,6 +168,12 @@ export class UserDataSource implements DatabaseInterface {
     }
   }
 
+  /**
+   * Checks if a user exists by their username.
+   *
+   * @param {string} username - The username to check for existence.
+   * @returns {Promise<boolean>} - A promise that resolves to `true` if the username exists, otherwise `false`.
+   */
   async getUserByUsername(username: string): Promise<boolean> {
     const response = await this.datasource("users")
       .where({ username: username })
@@ -176,5 +187,23 @@ export class UserDataSource implements DatabaseInterface {
       }
       return false;
     }
+  }
+
+  /**
+   * Updates a user's data by their ID.
+   *
+   * @param {string} id - The ID of the user to update.
+   * @param {Partial<IUserInterface>} userData - The data to update the user with.
+   * @returns {Promise<boolean>} - A promise that resolves to `true` if the update was successful.
+   */
+  async updateUser(
+    id: string,
+    userData: Partial<IUserInterface>,
+  ): Promise<boolean> {
+    const response = await this.datasource("users")
+      .where({ id })
+      .update(userData);
+
+    return response > 0;
   }
 }

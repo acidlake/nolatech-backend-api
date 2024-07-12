@@ -11,10 +11,13 @@ import { isAuthenticated } from "../../utils/isAuthenticated";
 import { validateUserData } from "../../utils/validateUserData";
 import {
   EmailExistsError,
+  InvalidEmailError,
   PasswordLengthError,
   UsernameExistsError,
 } from "../../errors/CustomErrors";
 import { SortEnum } from "../../interfaces/filter-interface";
+import { UpdateUserDTO } from "../../dto/v1/updateUserDto";
+import { validateUpdateUserData } from "../../utils/validateUpdateUserData";
 
 const backend = new UserDataSource(db, bcrypt, jwt, validateUserStatus);
 
@@ -119,7 +122,8 @@ export const store = async (ctx: Context): Promise<void> => {
     if (
       error instanceof EmailExistsError ||
       error instanceof UsernameExistsError ||
-      error instanceof PasswordLengthError
+      error instanceof PasswordLengthError ||
+      error instanceof InvalidEmailError
     ) {
       ctx.status = 400;
       ctx.body = {
@@ -153,7 +157,41 @@ export const show = async (ctx: Context): Promise<void> => {
 };
 
 // PUT-PATCH
-export const update = async (ctx: Context): Promise<void> => {};
+export const update = async (ctx: Context): Promise<void> => {
+  const request = ctx.request;
+  const params = ctx.params;
+  const userData: ICreateUserInterface =
+    request.body as unknown as ICreateUserInterface;
+  const id = params.id;
+
+  try {
+    await validateUpdateUserData(userData);
+
+    const sanitizeData = UpdateUserDTO(userData);
+
+    await backend.updateUser(id, sanitizeData);
+
+    ctx.status = 200;
+    ctx.body = {
+      success: true,
+    };
+  } catch (error) {
+    if (
+      error instanceof EmailExistsError ||
+      error instanceof UsernameExistsError ||
+      error instanceof PasswordLengthError ||
+      error instanceof InvalidEmailError
+    ) {
+      ctx.status = 400;
+      ctx.body = {
+        error: error.message,
+      };
+    } else {
+      ctx.status = 500;
+      ctx.body = { error: "Error updating user" };
+    }
+  }
+};
 
 // Delete
 export const destroy = async (ctx: Context): Promise<void> => {

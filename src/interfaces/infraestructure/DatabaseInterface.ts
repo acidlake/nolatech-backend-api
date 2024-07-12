@@ -73,4 +73,13 @@ export interface DatabaseInterface {
    * @returns {Promise<boolean>} - A promise that resolves to the user.
    */
   getUserByUsername(username: string): Promise<boolean>;
+
+  /**
+   * Update a user in the database.
+   *
+   * @param {string} id - The user id to be updated
+   * @param {Partial<IUserInterface>} userData - The data of the user to updated.
+   * @returns {Promise<IUserInterface>} - A promise that resolves to the user.
+   */
+  updateUser(id: string, userData: Partial<IUserInterface>): Promise<boolean>;
 }

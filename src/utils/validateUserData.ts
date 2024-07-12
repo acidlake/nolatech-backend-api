@@ -5,22 +5,34 @@ import {
   EmailExistsError,
   UsernameExistsError,
   PasswordLengthError,
+  InvalidEmailError,
 } from "../errors/CustomErrors";
 import { ICreateUserInterface } from "../interfaces/user-interface";
 import { UserDataSource } from "../server/db/queries/users";
 import { validateUserStatus } from "./validateUserStatus";
+import { checkEmailExists } from "./checkEmailExists";
+import { checkUsernameExists } from "./checkUsernameExists";
+import { checkPasswordLength } from "./checkPasswordLength";
+import { checkEmailValidity } from "./checkEmailValidity";
 
 const backend = new UserDataSource(db, bcrypt, jwt, validateUserStatus);
 
 export async function validateUserData(
   userData: Partial<ICreateUserInterface>,
 ): Promise<void> {
-  const emailExists = await checkEmailExists(userData.email || "");
+  if (!checkEmailValidity(userData.email || "")) {
+    throw new InvalidEmailError();
+  }
+
+  const emailExists = await checkEmailExists(userData.email || "", backend);
   if (emailExists) {
     throw new EmailExistsError();
   }
 
-  const checkUsername = await checkUsernameExists(userData.username || "");
+  const checkUsername = await checkUsernameExists(
+    userData.username || "",
+    backend,
+  );
   if (checkUsername) {
     throw new UsernameExistsError();
   }
@@ -29,22 +41,4 @@ export async function validateUserData(
   if (!passwordLength) {
     throw new PasswordLengthError();
   }
-}
-
-async function checkEmailExists(email: string): Promise<boolean> {
-  return await backend.getUserByEmail(email);
-}
-
-async function checkUsernameExists(username: string): Promise<boolean> {
-  return await backend.getUserByUsername(username);
-}
-
-function checkPasswordLength(password: string): boolean {
-  if (!password) return false;
-
-  if (password.length < 6 || password.length > 20) {
-    return false;
-  }
-
-  return true;
 }

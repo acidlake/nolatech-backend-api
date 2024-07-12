@@ -6,7 +6,6 @@ import knex from "knex";
  * @returns {string} The generated UUID.
  */
 function uuidGenerator(): string {
-  console.log("generate uuid", knex.knex);
   return "knex.fn.uuid();";
 }
 

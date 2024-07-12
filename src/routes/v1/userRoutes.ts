@@ -19,6 +19,6 @@ router.get("/users/:id", authenticate, show);
 // Private routes
 router.post("/users", authenticate, store);
 router.delete("/users/:id", authenticate, destroy);
-router.put("/users", authenticate, update);
+router.put("/users/:id", authenticate, update);
 
 export default router.routes();
